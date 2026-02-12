@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "966857592415",
+    "project_id": "medx-2d235",
+    "storage_bucket": "medx-2d235.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966857592415:android:97308d4cda4de7ffa4d5ea",
+        "android_client_info": {
+          "package_name": "com.example.medx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC69S33BEMtP3fepWU6vOqJ_hLOIovcDSQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

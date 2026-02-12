@@ -1,0 +1,47 @@
+name: medx
+description: "A Smart Medicine Reminder Flutter application."
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # ✅ Web-safe version (DO NOT upgrade to 2.x)
+  smooth_page_indicator: 1.1.0
+  flutter_local_notifications: ^20.0.0
+  timezone: ^0.10.1
+  firebase_core: ^4.4.0
+  firebase_auth: ^6.1.4
+  cloud_firestore: ^6.1.2
+  permission_handler: ^12.0.1
+  shared_preferences: ^2.5.3
+  google_fonts: ^6.3.2
+  image_picker: ^1.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
+
+# 🚀 App launcher icon configuration
+flutter_icons:
+  android: true
+  ios: true
+  image_path: assets/icon/app_icon.png
+
+flutter:
+  uses-material-design: true
+
+  # Assets
+  assets:
+    - assets/images/
+    - assets/icon/app_icon.png
