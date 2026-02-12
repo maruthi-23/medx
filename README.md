@@ -1,16 +1,31 @@
-# medx
+📱 medx – Smart Medicine Reminder App
 
-A new Flutter project.
+medx is a Flutter-based Smart Medicine Reminder mobile application designed to help users manage their daily medication schedules effectively. The app sends timely notifications so that no dose is missed and helps improve medication adherence.
 
-## Getting Started
+🚀 Features
 
-This project is a starting point for a Flutter application.
+  ⏰ Set multiple medicine reminders
+  
+  🔔 Local notifications for medicine timing
+  
+  🔐 Firebase Authentication (Login & Signup)
+  
+  ☁️ Firestore database integration
+  
+  ✏️ Add, edit, and delete medicines
+  
+  👤 User profile management
+  
+  📱 Clean and user-friendly UI
 
-A few resources to get you started if this is your first Flutter project:
+🛠️ Tech Stack
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  Flutter – Frontend framework
+  
+  Dart – Programming language
+  
+  Firebase Authentication – User login system
+  
+  Cloud Firestore – Database
+  
+  Flutter Local Notifications – Reminder alerts
