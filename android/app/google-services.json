@@ -12,7 +12,20 @@
           "package_name": "com.example.medx"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "966857592415-e394hrjr49nf100l6be2j5ipldmrfp1c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.medx",
+            "certificate_hash": "526d66e9c4b12eb05c80628f1ade173a14abc0a1"
+          }
+        },
+        {
+          "client_id": "966857592415-9gkffga2e8qrmcv3ibrfbufvkt1848s1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC69S33BEMtP3fepWU6vOqJ_hLOIovcDSQ"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "966857592415-9gkffga2e8qrmcv3ibrfbufvkt1848s1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "966857592415-dk4jldv18jrehuc73jvlqa6s4te5kjh6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.medx"
+              }
+            }
+          ]
         }
       }
     }

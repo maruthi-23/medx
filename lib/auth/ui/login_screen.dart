@@ -13,10 +13,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   late AuthController authController;
+
   bool isLoading = false;
 
   @override
@@ -32,10 +34,19 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  /// LOGIN
   Future<void> login() async {
-    setState(() {
-      isLoading = true;
-    });
+
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Enter email and password")),
+      );
+
+      return;
+    }
+
+    setState(() => isLoading = true);
 
     final error = await authController.login(
       emailController.text.trim(),
@@ -44,134 +55,234 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (!mounted) return;
 
-    setState(() {
-      isLoading = false;
-    });
+    setState(() => isLoading = false);
+
+    if (error != null) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error)));
+    }
+  }
+
+  /// GOOGLE LOGIN
+  Future<void> googleLogin() async {
+
+    setState(() => isLoading = true);
+
+    final error = await authController.signInWithGoogle();
+
+    if (!mounted) return;
+
+    setState(() => isLoading = false);
 
     if (error != null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(error)));
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Login Success")));
     }
+  }
+
+  /// RESET PASSWORD
+  Future<void> forgotPassword() async {
+
+    if (emailController.text.isEmpty) {
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Enter your email first")),
+      );
+
+      return;
+    }
+
+    final error =
+        await authController.sendPasswordReset(emailController.text.trim());
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(error ?? "Password reset email sent"),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FB),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 250,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF4A90E2), Color(0xFF357ABD)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+      backgroundColor: Colors.white,
+
+      body: SafeArea(
+        child: SingleChildScrollView(
+
+          padding: const EdgeInsets.symmetric(horizontal: 25),
+
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            children: [
+
+              const SizedBox(height: 40),
+
+              const Text(
+                "Welcome Back",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
                 ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(40),
-                  bottomRight: Radius.circular(40),
+              ),
+
+              const SizedBox(height: 8),
+
+              const Text(
+                "Login to continue",
+                style: TextStyle(color: Colors.grey),
+              ),
+
+              const SizedBox(height: 40),
+
+              /// EMAIL
+              _textField(
+                hintText: "Email",
+                controller: emailController,
+                prefixIcon: const Icon(Icons.email_outlined),
+                keyboardType: TextInputType.emailAddress,
+              ),
+
+              /// PASSWORD
+              _textField(
+                hintText: "Password",
+                controller: passwordController,
+                prefixIcon: const Icon(Icons.lock_outline),
+                obscureText: true,
+              ),
+
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: forgotPassword,
+                  child: const Text("Forgot Password?"),
                 ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircleAvatar(
-                    radius: 55,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.lock_outline,
-                      size: 60,
-                      color: Color(0xFF4A90E2),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    "Welcome Back",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+
+              const SizedBox(height: 10),
+
+              /// LOGIN BUTTON
+              _button(
+                name: "Login",
+                onPressed: isLoading ? null : login,
               ),
-            ),
-            const SizedBox(height: 40),
-            _textField(
-              hintText: "Email",
-              prefixIcon: const Icon(Icons.email_outlined),
-              controller: emailController,
-            ),
-            _textField(
-              hintText: "Password",
-              prefixIcon: const Icon(Icons.lock_outline),
-              obsecureText: true,
-              controller: passwordController,
-            ),
-            const SizedBox(height: 10),
-            _button(
-              name: "Login",
-              onpressed: isLoading ? null : login,
-              color: const Color(0xFF4A90E2),
-            ),
-            const SizedBox(height: 15),
-            RichText(
-              text: TextSpan(
-                text: "Don't have an account? ",
-                style: const TextStyle(color: Colors.black87),
-                children: [
-                  TextSpan(
-                    text: "Signup",
-                    style: const TextStyle(
-                      color: Color(0xFF4A90E2),
-                      fontWeight: FontWeight.bold,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (ctx) => const SignupScreen(),
-                          ),
-                        );
-                      },
+
+              const SizedBox(height: 20),
+
+              const Center(child: Text("OR")),
+
+              const SizedBox(height: 20),
+
+              /// GOOGLE BUTTON
+              _googleButton(),
+
+              const SizedBox(height: 30),
+
+              /// SIGNUP LINK
+              Center(
+                child: RichText(
+                  text: TextSpan(
+                    text: "Don't have an account? ",
+                    style: const TextStyle(color: Colors.black87),
+
+                    children: [
+
+                      TextSpan(
+                        text: "Signup",
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const SignupScreen(),
+                              ),
+                            );
+                          },
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-            const SizedBox(height: 30),
-          ],
+
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  /// GOOGLE BUTTON
+  Widget _googleButton() {
+
+    return SizedBox(
+      width: double.infinity,
+      height: 55,
+
+      child: OutlinedButton.icon(
+
+        onPressed: isLoading ? null : googleLogin,
+
+        icon: Image.network(
+          "https://cdn-icons-png.flaticon.com/512/2991/2991148.png",
+          height: 22,
+        ),
+
+        label: const Text(
+          "Continue with Google",
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// TEXT FIELD
   Widget _textField({
+
     String? hintText,
-    Icon? prefixIcon,
     TextEditingController? controller,
-    bool obsecureText = false,
+    Icon? prefixIcon,
+    bool obscureText = false,
+    TextInputType? keyboardType,
   }) {
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
+
       child: TextFormField(
+
         controller: controller,
-        obscureText: obsecureText,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+
         decoration: InputDecoration(
+
           hintText: hintText,
+
           prefixIcon: prefixIcon,
+
           filled: true,
-          fillColor: Colors.white,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+          fillColor: Colors.grey.shade100,
+
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
           ),
         ),
@@ -179,36 +290,33 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  /// BUTTON
   Widget _button({
     String? name,
-    required VoidCallback? onpressed,
-    Color? color,
+    required VoidCallback? onPressed,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
-      child: SizedBox(
-        width: double.infinity,
-        height: 55,
-        child: ElevatedButton(
-          onPressed: onpressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: color,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            elevation: 5,
+
+    return SizedBox(
+      width: double.infinity,
+      height: 55,
+
+      child: ElevatedButton(
+
+        onPressed: onPressed,
+
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: isLoading
-              ? const CircularProgressIndicator(color: Colors.white)
-              : Text(
-                  "$name",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
         ),
+
+        child: isLoading
+            ? const CircularProgressIndicator(color: Colors.white)
+            : Text(
+                name ?? "",
+                style: const TextStyle(fontSize: 16),
+              ),
       ),
     );
   }

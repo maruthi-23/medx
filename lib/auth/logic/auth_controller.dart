@@ -6,24 +6,14 @@ class AuthController {
 
   AuthController(this.authRepository);
 
-  bool isLoading = false;
-
   // ================= SIGNUP =================
   Future<String?> signup(
-    String email,
-    String password,
-    String username,
-  ) async {
+      String email, String password, String username) async {
     try {
-      isLoading = true;
-
-      // Basic validation
-      if (email.isEmpty || password.isEmpty || username.isEmpty) {
+      if (email.isEmpty ||
+          password.isEmpty ||
+          username.isEmpty) {
         return "All fields are required";
-      }
-
-      if (!email.contains("@")) {
-        return "Enter a valid email";
       }
 
       if (password.length < 6) {
@@ -33,61 +23,44 @@ class AuthController {
       await authRepository.signup(email, password, username);
       return null;
     } on FirebaseAuthException catch (e) {
-      return _handleAuthError(e);
-    } catch (e) {
-      return "Something went wrong. Try again.";
-    } finally {
-      isLoading = false;
+      return e.message;
     }
   }
 
   // ================= LOGIN =================
   Future<String?> login(
-    String email,
-    String password,
-  ) async {
+      String email, String password) async {
     try {
-      isLoading = true;
-
       if (email.isEmpty || password.isEmpty) {
-        return "Email and Password are required";
-      }
-
-      if (password.length < 6) {
-        return "Password must be at least 6 characters";
+        return "Email and Password required";
       }
 
       await authRepository.login(email, password);
       return null;
     } on FirebaseAuthException catch (e) {
-      return _handleAuthError(e);
-    } catch (e) {
-      return "Something went wrong. Try again.";
-    } finally {
-      isLoading = false;
+      return e.message;
     }
   }
 
-  // ================= LOGOUT =================
+  Future<String?> signInWithGoogle() async {
+    try {
+      await authRepository.signInWithGoogle();
+      return null;
+    } catch (e) {
+      return "Google sign in failed";
+    }
+  }
+
+  Future<String?> sendPasswordReset(String email) async {
+    try {
+      await authRepository.sendPasswordReset(email);
+      return null;
+    } catch (e) {
+      return "Failed to send reset email";
+    }
+  }
+
   Future<void> logout() async {
     await authRepository.logout();
-  }
-
-  // ================= ERROR HANDLER =================
-  String _handleAuthError(FirebaseAuthException e) {
-    switch (e.code) {
-      case 'email-already-in-use':
-        return "Email is already registered.";
-      case 'invalid-email':
-        return "Invalid email format.";
-      case 'weak-password':
-        return "Password is too weak.";
-      case 'user-not-found':
-        return "No user found with this email.";
-      case 'wrong-password':
-        return "Incorrect password.";
-      default:
-        return "Authentication failed. Please try again.";
-    }
   }
 }
